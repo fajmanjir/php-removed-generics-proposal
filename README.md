@@ -2,27 +2,25 @@
 
 ## Motivation
 
-## Introduction
-
-This document proposes generic types definition with implementation using removed generics. The purpose of removed generics is to enable specification of exact data types, which can be used by static analysis tools. Removed generics, by its definition, must not affect behavior of php interpreter. 
-
 ## Main Concepts
 
 The main concepts of this proposal are that:
 
 - all syntax extensions must not change behavior of interpreted code
 - all syntax extensions must be easily removed by parser
+- can be used by static analysis tools to improve developer experience
 
-## TODO
+## Introduction
+
+This document proposes generic types definition with implementation using removed generics. The purpose of removed generics is to enable specification of exact data types, which can be used by static analysis tools. Removed generics, by its definition, must not affect behavior of php interpreter.
 
 Generics can specify the following types:
 
 - return type of function or method
 - parameter type of function or method
-- class property type
-
-- array item type specification
-
+- variables for subtypes of function definition, class definition, interface definition, trait definition or enum definition
+- subtypes of array value and index type
+- subtypes for any _currently parsable type_
 
 ## Basic function using generics
 
@@ -30,7 +28,7 @@ This section shows function or method definition with extended input and return 
 
 ### Parameter type matching return type
 
-Since all syntax extensions must be easily removed, the return type declaration can use only _native types_. Otherwise, the parser would need to distinguish between existing type and generic type, which is difficult to implement.
+Since all syntax extensions must be easily removed, the return type declaration can use only _currently parsable types_. Otherwise, the parser would need to distinguish between existing type and generic type, which is difficult to implement.
 
 ```
 // generic return type cannot be used
@@ -39,7 +37,7 @@ function getClone<T>(): T
 
 Instead, `mixed<T>` type with _generic usage block_ can be used as a return type.
 
-Input parameter using _native type_:
+Input parameter using _currently parsable type_:
 
 ```
 function getClone<T>(mixed<T> $source): mixed<T>
@@ -48,7 +46,7 @@ function getClone<T>(mixed<T> $source): mixed<T>
 }
 ```
 
-Input parameter omitting _native type_:
+Input parameter omitting _currently parsable type_:
 
 ```
 function getClone<T>(<T> $source): mixed<T>
@@ -98,7 +96,7 @@ var_dump($result);
 
 The following definitions can be used as parameter type, return type, class generic type variable, trait, interface. (What about enum?)
 
-Array without specified index type using native type:
+Array without specified index type using currently parsable type:
 
 ```
 array<int>
@@ -112,7 +110,7 @@ array<T>
 
 The array form with a type ending with `[]`, for example `int[]` must not be used since it does not 
 
-Array without specified index type using native type:
+Array without specified index type using currently parsable type:
 
 ### Instancing array using generics
 
@@ -129,4 +127,4 @@ TODO:
 
 ## Definitions
 
-- _native type_ - data type which can be used as native type in parameter type, return type or property type definition in PHP 8.2 and later
+- _currently parsable type_ - data type which can be used as native type in parameter type, return type or property type definition in PHP 8.2 and later

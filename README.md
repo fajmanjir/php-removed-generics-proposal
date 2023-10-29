@@ -28,14 +28,17 @@ This section shows function or method definition with extended input and return 
 
 ### Parameter type matching return type
 
-Since all syntax extensions must be easily removed, the return type declaration can use only _currently parsable types_. Otherwise, the parser would need to distinguish between existing type and generic type, which is difficult to implement.
+Since all syntax extensions must be easily removed, the parameter type or the return type declaration can use only _currently parsable types_ outside diamond block. Otherwise, the parser would need to distinguish between existing type and generic type, which is difficult to implement.
 
 ```
-// generic return type cannot be used
+// variable parameter type CANNOT be used
+function getClone<T>(T $var)
+
+// variable return type CANNOT be used
 function getClone<T>(): T
 ```
 
-Instead, `mixed<T>` type with _generic usage block_ can be used as a return type.
+Instead, `mixed<T>` type with _generic usage block_ can be used as parameter type or return type. `<T>` can be used as a parameter type since it is easier to understand.
 
 Input parameter using _currently parsable type_:
 
@@ -54,8 +57,6 @@ function getClone<T>(<T> $source): mixed<T>
     return clone $source;
 }
 ```
-
-
 
 ### Collection example
 

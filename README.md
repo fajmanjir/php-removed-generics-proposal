@@ -30,7 +30,7 @@ This section shows function or method definition with extended input and return 
 
 ### Parameter type matching return type
 
-Since all syntax extensions must be easily removed, the return type declaration can use only existing data types. Otherwise, the parser would need to distinguish between existing type and generic type, which is difficult to implement.
+Since all syntax extensions must be easily removed, the return type declaration can use only _native types_. Otherwise, the parser would need to distinguish between existing type and generic type, which is difficult to implement.
 
 ```
 // generic return type cannot be used
@@ -39,7 +39,7 @@ function getClone<T>(): T
 
 Instead, `mixed<T>` type with _generic usage block_ can be used as a return type.
 
-Input parameter using native type:
+Input parameter using _native type_:
 
 ```
 function getClone<T>(mixed<T> $source): mixed<T>
@@ -48,7 +48,7 @@ function getClone<T>(mixed<T> $source): mixed<T>
 }
 ```
 
-Input parameter omitting native type:
+Input parameter omitting _native type_:
 
 ```
 function getClone<T>(<T> $source): mixed<T>

@@ -19,6 +19,7 @@ Generics can specify the following types:
 - return type of function or method
 - parameter type of function or method
 - variables for subtypes of function definition, class definition, interface definition, trait definition or enum definition
+- subtypes of extending classes, interfaces, traits or enums
 - subtypes of array value and index type
 - subtypes for any _currently parsable type_
 
@@ -31,14 +32,13 @@ This section shows function or method definition with extended input and return 
 Since all syntax extensions must be easily removed, the parameter type or the return type declaration can use only _currently parsable types_ outside diamond block. Otherwise, the parser would need to distinguish between existing type and generic type, which is difficult to implement.
 
 ```
-// variable parameter type CANNOT be used
-function getClone<T>(T $var)
-
-// variable return type CANNOT be used
-function getClone<T>(): T
+function getClone<T>(T $var) // this is NOT possible
+function getClone<T>(): T // this is NOT possible
 ```
 
-Instead, `mixed<T>` type with _generic usage block_ can be used as parameter type or return type. `<T>` can be used as a parameter type since it is easier to understand.
+Instead, `mixed<T>` type with _generic usage block_ can be used as parameter type or return type. Static analysis tools should consider it to be of type `T`, whether the parser strips the `<T>` part and uses `mixed` as a native type.
+
+`<T>` can be used as a parameter type instead of `mixed<T>` since it is easier to understand. Static analysis tools should consider it to be of type `T`, whether the parser strips the `<T>` part, so only the parameter name is kept, without a native type.
 
 Input parameter using _currently parsable type_:
 
@@ -58,7 +58,7 @@ function getClone<T>(<T> $source): mixed<T>
 }
 ```
 
-### Collection example
+Return type using _currently parsable type_ with subtype specification:
 
 ```
 function createCollection<T>(): Collection<T>
@@ -91,6 +91,37 @@ $result = $collection->all();
 var_dump($result);
 ```
 
+## Class inheritance
+
+```
+interface I<T>
+{
+}
+
+class A<T> implements I<T>
+{
+}
+
+class B implements I<int>
+{
+}
+```
+
+TODO: abstract class
+
+## Generic declaration block
+
+The generic declaration block must consist of one or more template variables. Trailing comma is allowed.
+
+For example these declarations are valid:
+
+```
+<T1>
+<T1,>
+<T1, T2>
+<T1, T2,>
+```
+
 ## Arrays
 
 ### Array item type definitions
@@ -109,7 +140,7 @@ Array without specified index type using generic type variable:
 array<T>
 ```
 
-The array form with a type ending with `[]`, for example `int[]` must not be used since it does not 
+The array form with a type ending with `[]`, for example `int[]` must not be used for removed generics because it is misleading as it seems like a type that is type-checked during runtime by the parser.
 
 Array without specified index type using currently parsable type:
 
@@ -129,3 +160,8 @@ TODO:
 ## Definitions
 
 - _currently parsable type_ - data type which can be used as native type in parameter type, return type or property type definition in PHP 8.2 and later
+
+## Todos
+
+- default parameter type is array with a subtype
+- default property type is array with a subtype

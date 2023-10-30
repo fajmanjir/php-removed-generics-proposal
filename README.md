@@ -23,7 +23,7 @@ Generics can specify the following types:
 - subtypes of array value and index type
 - subtypes for any _currently parsable type_
 
-## Basic function using generics
+## Basic function definition using generics
 
 This section shows function or method definition with extended input and return types.
 
@@ -64,7 +64,15 @@ Return type using _currently parsable type_ with subtype specification:
 function createCollection<T>(): Collection<T>
 ```
 
-## Basic class using generics
+When the `createCollection` function is called, it should specify all generic variable types:
+
+```
+createCollection<int>();
+```
+
+Static analysers should consider the value returned by the function call to be of type `Collection<int>`. 
+
+## Basic class definition using generics
 
 Example class definition and usage:
 
